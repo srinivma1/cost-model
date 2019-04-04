@@ -26,10 +26,6 @@ The recommended way to install the Kubecost cost model (along with dashboards) i
 
 Compared to building from source, this is faster and includes all necessary dependencies. The Kubecost cost model is also available as a container (kubecost/cost-model) and you can deploy run the Golang code yourself as described in the section below.
 
-## Contributing
-
-We welcome any contributions to the project! 
-
 If you want to just run the cost model directly on your cluster, complete the following steps:
 
 1. Set [this environment variable](https://github.com/kubecost/cost-model/blob/master/kubernetes/deployment.yaml#L30) to the address of your prometheus server
@@ -40,6 +36,17 @@ If you want to just run the cost model directly on your cluster, complete the fo
 To test that the server is running, you can hit http://localhost:9001/costDataModel?timeWindow=1d
 
 Note: the following dependencies mentioned above are required for this installation path.
+
+## Contributing
+
+We welcome all contributions! To contribute, you'll need to build the cost-model docker container then push it to a kubernetes cluster with a running prometheus.
+
+1. `docker build --rm -f "Dockerfile" -t <repo>/kubecost-cost-model:<tag> .`
+2. Edit the [pulled image](https://github.com/kubecost/cost-model/blob/master/kubernetes/deployment.yaml#L22) in the deployment.yaml to <repo>/kubecost-cost-model:<tag>
+1. Set [this environment variable](https://github.com/kubecost/cost-model/blob/master/kubernetes/deployment.yaml#L30) to the address of your prometheus server
+2. `kubectl create namespace cost-model`
+3. `kubectl apply -f kubernetes/ --namespace cost-model`
+4. `kubectl port-forward --namespace cost-model service/cost-model 9001`
 
 
 ## Licensing
